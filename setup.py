@@ -1,12 +1,12 @@
 from setuptools import setup
 
-package_name = "dynamo-store"
+package_name = "dynamostore"
 
 packages = [package_name]
 
 setup(
     name=package_name,
-    version='1.0.1',
+    version='1.0.0',
     description='client library for dynamodb as a key-value store',
     url='https://github.com/xitter/dynamo-store',
     author='Vijay Jain',
