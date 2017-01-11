@@ -3,24 +3,26 @@ import json, decimal
 from botocore.exceptions import ClientError
 from dynamostore.exception import InvalidInputException, NotFoundException
 
+__all__ = ['KeyStore']
 
-class DecimalEncoder(json.JSONEncoder):
+
+class _DecimalEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, decimal.Decimal):
             if o % 1 > 0:
                 return float(o)
             else:
                 return int(o)
-        return super(DecimalEncoder, self).default(o)
+        return super(_DecimalEncoder, self).default(o)
 
 
-class KeyStore():
-    __db = boto3.resource('dynamodb')
-    __table_repository = dict()
+class KeyStore:
+    _db = boto3.resource('dynamodb')
+    _table_repository = {}
 
     @classmethod
     def put(cls, table, primary_key, data):
-        model = cls.__register_table(table)
+        model = cls._register_table(table)
         try:
             response = model.get_item(
                 Key={
@@ -34,7 +36,7 @@ class KeyStore():
             stored_data = response['Item'] if 'Item' in response else None
 
         if stored_data is None:
-            return json.dumps(model.put_item(Item=data), cls=DecimalEncoder)
+            return json.dumps(model.put_item(Item=data), cls=_DecimalEncoder)
         else:
             expression = list()
             expression_attribute_values = {}
@@ -52,11 +54,11 @@ class KeyStore():
                 UpdateExpression=expression,
                 ExpressionAttributeValues=expression_attribute_values,
                 ReturnValues="UPDATED_NEW"
-            ), cls=DecimalEncoder)
+            ), cls=_DecimalEncoder)
 
     @classmethod
     def get(cls, table, primary_key):
-        model = cls.__register_table(table)
+        model = cls._register_table(table)
         try:
             response = model.get_item(
                 Key={
@@ -68,14 +70,14 @@ class KeyStore():
             raise e
         else:
             if 'Item' in response:
-                return json.dumps(response['Item'], cls=DecimalEncoder)
+                return json.dumps(response['Item'], cls=_DecimalEncoder)
             else:
                 raise NotFoundException()
 
     @classmethod
-    def __register_table(cls, table):
-        model = cls.__table_repository[table] if table in cls.__table_repository else None
+    def _register_table(cls, table):
+        model = cls._table_repository[table] if table in cls._table_repository else None
         if model is None:
-            model = cls.__db.Table(table)
-        cls.__table_repository[table] = model
+            model = cls._db.Table(table)
+        cls._table_repository[table] = model
         return model

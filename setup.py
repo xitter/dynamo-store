@@ -6,7 +6,7 @@ packages = [package_name]
 
 setup(
     name=package_name,
-    version='1.0.0',
+    version='1.0.1',
     description='client library for dynamodb as a key-value store',
     url='https://github.com/xitter/dynamo-store',
     author='Vijay Jain',
