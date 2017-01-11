@@ -6,9 +6,9 @@ packages = [package_name]
 
 setup(
     name=package_name,
-    version='1.0.0',
-    description='Client for dynamodb as a keystore',
-    url='https://github.com/rajeev1982/pyboot',
+    version='1.0.1',
+    description='client library for dynamodb as a key-value store',
+    url='https://github.com/xitter/dynamo-store',
     author='Vijay Jain',
     author_email='mnnit.vijay@gmail.com',
     license='MIT',

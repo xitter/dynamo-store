@@ -1,7 +1,7 @@
 import boto3
 import json, decimal
 from botocore.exceptions import ClientError
-from exception import InvalidInputException, NotFoundException
+from dynamostore.exception import InvalidInputException, NotFoundException
 
 
 class DecimalEncoder(json.JSONEncoder):
@@ -14,15 +14,15 @@ class DecimalEncoder(json.JSONEncoder):
         return super(DecimalEncoder, self).default(o)
 
 
-class KeyStore(object):
-    db = boto3.resource('dynamodb')
-    project_attributes = db.Table('project_attributes')
+class KeyStore():
+    __db = boto3.resource('dynamodb')
+    __table_repository = dict()
 
-    @staticmethod
-    def put(table, primary_key, data):
-
+    @classmethod
+    def put(cls, table, primary_key, data):
+        model = cls.__register_table(table)
         try:
-            response = table.get_item(
+            response = model.get_item(
                 Key={
                     'id': primary_key
                 }
@@ -34,7 +34,7 @@ class KeyStore(object):
             stored_data = response['Item'] if 'Item' in response else None
 
         if stored_data is None:
-            return json.dumps(table.put_item(Item=data), cls=DecimalEncoder)
+            return json.dumps(model.put_item(Item=data), cls=DecimalEncoder)
         else:
             expression = list()
             expression_attribute_values = {}
@@ -45,7 +45,7 @@ class KeyStore(object):
             if len(expression) < 1:
                 raise InvalidInputException("provide at-least one attribute to update")
             expression = 'set ' + ''.join(expression)[:-1]
-            return json.dumps(table.update_item(
+            return json.dumps(model.update_item(
                 Key={
                     'id': primary_key
                 },
@@ -54,10 +54,11 @@ class KeyStore(object):
                 ReturnValues="UPDATED_NEW"
             ), cls=DecimalEncoder)
 
-    @staticmethod
-    def get(table, primary_key):
+    @classmethod
+    def get(cls, table, primary_key):
+        model = cls.__register_table(table)
         try:
-            response = table.get_item(
+            response = model.get_item(
                 Key={
                     'id': primary_key
                 }
@@ -70,3 +71,11 @@ class KeyStore(object):
                 return json.dumps(response['Item'], cls=DecimalEncoder)
             else:
                 raise NotFoundException()
+
+    @classmethod
+    def __register_table(cls, table):
+        model = cls.__table_repository[table] if table in cls.__table_repository else None
+        if model is None:
+            model = cls.__db.Table(table)
+        cls.__table_repository[table] = model
+        return model
