@@ -1,0 +1,6 @@
+.idea
+bin
+dynamo_store.egg-info
+include
+lib
+.Python
