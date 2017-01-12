@@ -6,7 +6,7 @@ packages = [package_name]
 
 setup(
     name=package_name,
-    version='0.0.0',
+    version='0.0.1',
     description='client library for dynamodb as a json store',
     url='https://github.com/xitter/dynamo-store',
     author='Vijay Jain',
@@ -23,7 +23,8 @@ setup(
     keywords=['dynamo', 'json', 'dump'],
     packages=packages,
     install_requires=[
-        'boto3>=1.4.3'
+        'boto3==1.4.3',
+        'iso8601==0.1.10'
     ],
     extras_require={},
     package_data={},
