@@ -1,13 +1,13 @@
 from setuptools import setup
 
-package_name = "dynamostore"
+package_name = "pyjstore"
 
 packages = [package_name]
 
 setup(
     name=package_name,
-    version='1.0.1',
-    description='client library for dynamodb as a key-value store',
+    version='0.0.0',
+    description='client library for dynamodb as a json store',
     url='https://github.com/xitter/dynamo-store',
     author='Vijay Jain',
     author_email='mnnit.vijay@gmail.com',
@@ -20,7 +20,7 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
 
-    keywords=['dynamo','key-value store'],
+    keywords=['dynamo', 'json', 'dump'],
     packages=packages,
     install_requires=[
         'boto3>=1.4.3'
