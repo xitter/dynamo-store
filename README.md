@@ -1,6 +1,6 @@
-# dynamo-store
+# py-jstore
 
-Python Library for using aws dynamodb as a key('id'') value store.
+Python Library for using aws dynamodb as a json store.
 
 ##Operation:
 
