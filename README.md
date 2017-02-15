@@ -2,6 +2,9 @@
 
 Python Library for using aws dynamodb as a json store.
 
+##Installation:
+pip install pyjstore
+
 ##Operation:
 
 ###put(primary_key=,data=,table=)
